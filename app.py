@@ -13,17 +13,28 @@ def home():
     global chat_history
 
     if request.method == "POST":
-        user = request.form.get("message")
+        user_input = request.form.get("message")
 
-        if not user:
+        if not user_input:
             return render_template("index.html", chat=chat_history)
 
-        ai = get_response(user)
+        reply = get_response(user_input)
 
-        chat_history.append(("You", user))
-        chat_history.append(("AI", ai))
+        chat_history.append(("You", user_input))
+        chat_history.append(("AI", reply))
 
     return render_template("index.html", chat=chat_history)
+
+@app.route("/api/chat", methods=["POST"])
+def api_chat():
+    data = request.get_json()
+
+    if not data or "message" not in data:
+        return {"error": "No message provided"}, 400
+
+    reply = get_response(data["message"])
+
+    return {"reply": reply}
 
 if __name__ == "__main__":
     app.run()

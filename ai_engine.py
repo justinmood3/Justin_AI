@@ -14,6 +14,7 @@ def get_response(user_message):
                 {"role": "user", "content": user_message}
             ]
         )
+
         return response.choices[0].message.content
 
     except Exception as e:
