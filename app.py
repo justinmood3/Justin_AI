@@ -1,25 +1,19 @@
-from flask import Flask, render_template, request
+from flask import Flask, request, render_template
 from ai_engine import get_response
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = Flask(__name__)
 
-chat_history = []
-
 @app.route("/", methods=["GET", "POST"])
 def home():
-    global chat_history
-
     if request.method == "POST":
-        user = request.form["message"]
-        ai = get_response(user)
+        user_input = request.form.get("message")
+        if not user_input:
+            return "No input provided"
 
-        chat_history.append(("You", user))
-        chat_history.append(("AI", ai))
+        reply = get_response(user_input)
+        return reply
 
-    return render_template("index.html", chat=chat_history)
+    return "AI Chat is running 🚀"
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
